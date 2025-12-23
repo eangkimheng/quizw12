@@ -42,23 +42,25 @@ class _NewItemState extends State<NewItem> {
   }
 
   void onReset() {
-    setState(() {
-      _selectedCategory = defaultCategory;
-      _nameController.text = defaultName;
+    setState((){
+      _nameController.text = defautName;
       _quantityController.text = defaultQuantity.toString();
+      _selectedCategory = defaultCategory;
     });
   }
 
   void onAdd() {
-    if (!_formKey.currentState!.validate()) return;
+    final name = _nameController.text;
+    final quantity = int.tryParse(_quantityController.text) ?? 1;
+    final category = _selectedCategory;
+    final id = DateTime.now().toString();
 
     final newGrocery = Grocery(
-      id: DateTime.now().toString(),
-      name: _nameController.text.trim(),
-      quantity: int.parse(_quantityController.text),
-      category: _selectedCategory,
+      id: id,
+      name: name,
+      quantity: quantity,
+      category: category,
     );
-
     Navigator.of(context).pop(newGrocery);
   }
   
@@ -97,25 +99,10 @@ class _NewItemState extends State<NewItem> {
                 Expanded(
                   child: DropdownButtonFormField<GroceryCategory>(
                     value: _selectedCategory,
-                    items: GroceryCategory.values.map((cat) {
-                      return DropdownMenuItem<GroceryCategory>(
-                        value: cat,
-                        child: Row(
-                          children: [
-                            Container(
-                              width: 15,
-                              height: 15,
-                              margin: const EdgeInsets.only(right: 8),
-                              decoration: BoxDecoration(
-                                color: cat.color,
-                                borderRadius: BorderRadius.circular(3),
-                              ),
-                            ),
-                            Text(cat.label.toLowerCase()),
-                          ],
-                        ),
-                      );
-                    }).toList(),
+                    items: GroceryCategory.values.map((category) => DropdownMenuItem(
+                      value: category,
+                      child: Text(category.label),
+                    )).toList(),
                     onChanged: (value) {
                       if (value != null) {
                         setState(() {
@@ -123,8 +110,7 @@ class _NewItemState extends State<NewItem> {
                         });
                       }
                     },
-                  ),
-                ),
+                 ) ),
               ],
             ),
             const SizedBox(height: 12),
